@@ -31,6 +31,8 @@ router.post('/register', async (req, res) => {
       lastName,
       phoneNumber,
       // Reverted to original secure logic for public registration:
+    //   to make admins
+    //   role: ['customer', 'admin', 'delivery-agent'].includes(role) ? role : 'customer'
       role: role && ['customer', 'delivery-agent'].includes(role) ? role : 'customer'
     });
 
