@@ -3,7 +3,7 @@
 const express = require('express');
 const router = express.Router();
 const Order = require('../models/Order'); // Import the Order model
-const Product = require('../models/Product'); // Will need Product to check stock
+const User = require('../models/User'); // Need User model to verify delivery agent
 const { protect, authorizeRoles } = require('../middleware/authMiddleware'); // Import protect middleware
 
 // --- Order Creation ---

@@ -11,7 +11,8 @@ const PORT = process.env.PORT || 5000;
 const productRoutes = require('./routes/productRoutes');
 const userRoutes = require('./routes/userRoutes');
 const categoryRoutes = require('./routes/categoryRoutes');
-const orderRoutes = require('./routes/orderRoutes'); // NEW LINE
+const orderRoutes = require('./routes/orderRoutes');
+const paymentRoutes = require('./routes/paymentRoutes'); // NEW LINE
 
 // Connect to MongoDB
 mongoose.connect(process.env.MONGODB_URI)
@@ -29,6 +30,8 @@ mongoose.connect(process.env.MONGODB_URI)
   });
 
 // Middleware to parse JSON bodies
+// IMPORTANT: For webhook, you might need a different parser BEFORE app.use(express.json())
+// For now, this is fine, but remember for webhooks.
 app.use(express.json());
 
 // Basic route
@@ -40,4 +43,5 @@ app.get('/', (req, res) => {
 app.use('/api/products', productRoutes);
 app.use('/api/users', userRoutes);
 app.use('/api/categories', categoryRoutes);
-app.use('/api/orders', orderRoutes); // NEW LINE (all routes in orderRoutes will be prefixed with /api/orders)
+app.use('/api/orders', orderRoutes);
+app.use('/api/payments', paymentRoutes); // NEW LINE (all routes in paymentRoutes will be prefixed with /api/payments)
