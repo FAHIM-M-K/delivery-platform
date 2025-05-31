@@ -7,21 +7,20 @@ const userSchema = new mongoose.Schema({
   email: {
     type: String,
     required: [true, 'Email is required'],
-    unique: true, // Ensure emails are unique
+    unique: true,
     trim: true,
-    lowercase: true, // Store emails in lowercase
-    match: [/.+\@.+\..+/, 'Please fill a valid email address'] // Basic email format validation
+    lowercase: true,
+    match: [/.+\@.+\..+/, 'Please fill a valid email address']
   },
   password: {
     type: String,
     required: [true, 'Password is required'],
-    minlength: [6, 'Password must be at least 6 characters long'] // Minimum password length
+    minlength: [6, 'Password must be at least 6 characters long']
   },
-  // Define roles: 'customer', 'admin', 'delivery-agent'
   role: {
     type: String,
-    enum: ['customer', 'admin', 'delivery-agent'], // Enforce specific roles
-    default: 'customer' // Default role for new users
+    enum: ['customer', 'admin', 'delivery-agent'],
+    default: 'customer'
   },
   firstName: {
     type: String,
@@ -31,11 +30,17 @@ const userSchema = new mongoose.Schema({
     type: String,
     trim: true
   },
-  // We can add addresses here or in a separate model later
-  // For now, let's keep it simple. Addresses can be managed in a separate 'Address' model
-  // and linked to the user, or embedded. For this stage, let's just allow for basic user info.
+  // NEW LINE: Add phoneNumber field
+  phoneNumber: {
+    type: String,
+    trim: true,
+    // You might want to add a regex match for phone number format validation
+    // e.g., match: [/^\+?\d{8,15}$/, 'Please fill a valid phone number']
+    // For simplicity, we'll keep it basic for now.
+    required: [true, 'Phone number is required'] // Making it required for delivery
+  },
 }, {
-  timestamps: true // Adds createdAt and updatedAt fields automatically
+  timestamps: true
 });
 
 // --- Middleware to hash password before saving ---
