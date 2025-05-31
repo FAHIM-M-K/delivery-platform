@@ -1,12 +1,13 @@
 // routes/productRoutes.js
 
 const express = require('express');
-const router = express.Router(); // <--- Ensure this line is present and creates a router
-const Product = require('../models/Product'); // Import the Product model
+const router = express.Router();
+const Product = require('../models/Product');
+const { protect, authorizeRoles } = require('../middleware/authMiddleware'); //Import middleware
 
 // --- Product CRUD Operations ---
 
-// 1. GET all products (Public & Admin)
+// 1. GET all products (Public & Admin) - No protection needed for viewing products
 // GET /api/products
 router.get('/', async (req, res) => {
   try {
@@ -18,7 +19,7 @@ router.get('/', async (req, res) => {
   }
 });
 
-// 2. GET a single product by ID (Public & Admin)
+// 2. GET a single product by ID (Public & Admin) - No protection needed for viewing a single product
 // GET /api/products/:id
 router.get('/:id', async (req, res) => {
   try {
@@ -39,7 +40,8 @@ router.get('/:id', async (req, res) => {
 
 // 3. CREATE a new product (Admin Only)
 // POST /api/products
-router.post('/', async (req, res) => {
+// Apply 'protect' to ensure user is logged in, and 'authorizeRoles('admin')' to ensure they are an admin
+router.post('/', protect, authorizeRoles('admin'), async (req, res) => { // CHANGED LINE
   try {
     const { name, description, price, stockQuantity, category, subCategory, images, isOnSale, discountPrice } = req.body;
 
@@ -75,7 +77,8 @@ router.post('/', async (req, res) => {
 
 // 4. UPDATE an existing product (Admin Only)
 // PUT /api/products/:id
-router.put('/:id', async (req, res) => {
+// Apply 'protect' and 'authorizeRoles('admin')'
+router.put('/:id', protect, authorizeRoles('admin'), async (req, res) => { // CHANGED LINE
   try {
     const { name, description, price, stockQuantity, category, subCategory, images, isOnSale, discountPrice } = req.body;
 
@@ -85,7 +88,8 @@ router.put('/:id', async (req, res) => {
       return res.status(404).json({ message: 'Product not found' });
     }
 
-    product.name = name !== undefined ? name : product.name; // Use !== undefined to allow empty strings or 0
+    // Update product fields
+    product.name = name !== undefined ? name : product.name;
     product.description = description !== undefined ? description : product.description;
     product.price = price !== undefined ? price : product.price;
     product.stockQuantity = stockQuantity !== undefined ? stockQuantity : product.stockQuantity;
@@ -115,7 +119,8 @@ router.put('/:id', async (req, res) => {
 
 // 5. DELETE a product (Admin Only)
 // DELETE /api/products/:id
-router.delete('/:id', async (req, res) => {
+// Apply 'protect' and 'authorizeRoles('admin')'
+router.delete('/:id', protect, authorizeRoles('admin'), async (req, res) => { // CHANGED LINE
   try {
     const product = await Product.findByIdAndDelete(req.params.id);
 
@@ -133,4 +138,4 @@ router.delete('/:id', async (req, res) => {
   }
 });
 
-module.exports = router; // <--- ENSURE THIS LINE IS PRESENT AND EXPORTS THE ROUTER
+module.exports = router;

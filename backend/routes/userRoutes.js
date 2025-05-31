@@ -36,7 +36,10 @@ router.post('/register', async (req, res) => {
       // Only allow 'admin' role if explicitly set AND if an admin is performing the action (later, with auth middleware)
       // For now, new registrations will default to 'customer' role.
       // If a 'role' is provided in req.body, ensure it's not 'admin' for public registration.
-      role: role && ['customer', 'delivery-agent'].includes(role) ? role : 'customer'
+      // un-comment this line to get to add admin
+      // role: ['customer', 'admin', 'delivery-agent'].includes(role) ? role : 'customer' 
+      role: role && ['customer', 'delivery-agent'].includes(role) ? role : 'customer'   
+
     });
 
     if (user) {
