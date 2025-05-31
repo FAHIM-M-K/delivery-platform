@@ -12,6 +12,7 @@ const PORT = process.env.PORT || 5000; // Define the port, use environment varia
 // If your productRoutes.js is in 'backend/routes/productRoutes.js'
 // and server.js is in 'backend/server.js', then '../routes/productRoutes' is correct.
 const productRoutes = require('./routes/productRoutes'); // <--- Ensure this path is correct!
+const userRoutes = require('./routes/userRoutes');
 
 // Connect to MongoDB
 mongoose.connect(process.env.MONGODB_URI)
@@ -42,4 +43,4 @@ app.get('/', (req, res) => {
 // Use product routes
 // All routes defined in productRoutes.js will be prefixed with /api/products
 app.use('/api/products', productRoutes); // <--- This line is likely the source of the error if productRoutes is not a function
-
+app.use('/api/users', userRoutes); 
