@@ -29,6 +29,8 @@ mongoose.connect(process.env.MONGODB_URI)
     process.exit(1);
   });
 
+app.use('/api/payments/webhook', express.raw({ type: 'application/json' }));
+
 // Middleware to parse JSON bodies
 // IMPORTANT: For webhook, you might need a different parser BEFORE app.use(express.json())
 // For now, this is fine, but remember for webhooks.
@@ -44,4 +46,4 @@ app.use('/api/products', productRoutes);
 app.use('/api/users', userRoutes);
 app.use('/api/categories', categoryRoutes);
 app.use('/api/orders', orderRoutes);
-app.use('/api/payments', paymentRoutes); // NEW LINE (all routes in paymentRoutes will be prefixed with /api/payments)
+app.use('/api/payments', paymentRoutes); 

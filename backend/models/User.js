@@ -1,4 +1,4 @@
-// models/User.js
+// backend/models/User.js
 
 const mongoose = require('mongoose');
 const bcrypt = require('bcryptjs'); // For password hashing
@@ -30,34 +30,42 @@ const userSchema = new mongoose.Schema({
     type: String,
     trim: true
   },
-  // NEW LINE: Add phoneNumber field
+
   phoneNumber: {
     type: String,
     trim: true,
-    // You might want to add a regex match for phone number format validation
-    // e.g., match: [/^\+?\d{8,15}$/, 'Please fill a valid phone number']
-    // For simplicity, we'll keep it basic for now.
-    required: [true, 'Phone number is required'] // Making it required for delivery
+    required: [true, 'Phone number is required']
+  },
+  // --- RE-ADDED ADDRESSES ARRAY ---
+  addresses: [
+    {
+      address: { type: String, required: true },
+      city: { type: String, required: true },
+      postalCode: { type: String, required: true },
+      country: { type: String, required: true },
+      isDefault: { type: Boolean, default: false }, // For primary address
+    },
+  ],
+  // --- END RE-ADDED ---
+  isBlocked: { // From our previous step, ensure this is still here
+    type: Boolean,
+    default: false,
   },
 }, {
   timestamps: true
 });
 
 // --- Middleware to hash password before saving ---
-// This runs before a user document is saved to the database
 userSchema.pre('save', async function(next) {
-  // Only hash the password if it has been modified (or is new)
   if (!this.isModified('password')) {
     return next();
   }
-  // Generate a salt and hash the password
-  const salt = await bcrypt.genSalt(10); // 10 is the number of rounds for hashing
+  const salt = await bcrypt.genSalt(10);
   this.password = await bcrypt.hash(this.password, salt);
   next();
 });
 
 // --- Method to compare entered password with hashed password ---
-// This method will be available on user instances
 userSchema.methods.matchPassword = async function(enteredPassword) {
   return await bcrypt.compare(enteredPassword, this.password);
 };

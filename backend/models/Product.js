@@ -29,6 +29,7 @@ const productSchema = new mongoose.Schema({
   // Categorization
   category: {
     type: String,
+    ref: 'Category',
     required: [true, 'Product category is required'],
     trim: true
   },
